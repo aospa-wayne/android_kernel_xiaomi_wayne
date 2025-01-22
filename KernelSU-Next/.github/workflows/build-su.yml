@@ -1,13 +1,13 @@
 name: Build SU
 on:
   push:
-    branches: [ "next" ]
+    branches: [ "main", "ci" ]
     paths:
       - '.github/workflows/build-su.yml'
       - 'userspace/su/**'
-      - 'scripts/ksunextbot.py'
+      - 'scripts/ksubot.py'
   pull_request:
-    branches: [ "next" ]
+    branches: [ "main" ]
     paths:
       - 'userspace/su/**'
 jobs:
@@ -26,9 +26,12 @@ jobs:
         else
           echo "UPLOAD=false" >> $GITHUB_OUTPUT
         fi
+    - uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r26d
     - name: Build su
       working-directory: ./userspace/su
-      run: $ANDROID_NDK/ndk-build
+      run: ndk-build
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
